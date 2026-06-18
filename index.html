@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ID Card Detection System</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.17.0/dist/ort.min.js"></script>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1>🛡️ ID Guard</h1>
+    <p>Professional ID Card Detection System</p>
+  </div>
+  <div class="status">
+    <span id="modelStatus" class="status-badge loading">Loading Model...</span>
+  </div>
+</header>
+
+<main>
+  <section class="controls">
+    <h2>Select Input Source</h2>
+    <div class="control-buttons">
+      <button id="btnImage" class="btn">📷 Upload Image</button>
+      <button id="btnVideo" class="btn">🎬 Upload Video</button>
+      <button id="btnWebcam" class="btn">📹 Live Webcam</button>
+      <button id="btnStop" class="btn btn-stop">⏹ Stop</button>
+    </div>
+    <input type="file" id="imageInput" accept="image/*" hidden>
+    <input type="file" id="videoInput" accept="video/*" hidden>
+  </section>
+
+  <section class="display-area">
+    <div class="canvas-wrapper">
+      <video id="video" autoplay muted playsinline hidden></video>
+      <canvas id="canvas"></canvas>
+      <div id="overlay" class="overlay">
+        <p>👆 Choose an input source to begin detection</p>
+      </div>
+    </div>
+
+    <aside class="info-panel">
+      <div class="info-card">
+        <h3>Detection Stats</h3>
+        <p>👥 Persons: <span id="personCount">0</span></p>
+        <p>🪪 ID Cards: <span id="idCount">0</span></p>
+        <p>⚠️ Violations: <span id="violationCount">0</span></p>
+      </div>
+      <div class="info-card alert-box" id="alertBox">
+        <h3>Status</h3>
+        <p id="alertText">✅ All Clear</p>
+      </div>
+      <div class="info-card">
+        <h3>Settings</h3>
+        <label>Confidence: <span id="confValue">0.5</span></label>
+        <input type="range" id="confSlider" min="0.1" max="0.9" step="0.05" value="0.5">
+        <label><input type="checkbox" id="soundToggle" checked> Enable Alarm</label>
+      </div>
+    </aside>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 ID Guard System | Powered by YOLOv8 + ONNX Runtime</p>
+</footer>
+
+<audio id="alarm" src="alarm.mp3" loop></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
