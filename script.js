@@ -203,14 +203,25 @@ document.getElementById('btnVideo').onclick = ()=>document.getElementById('video
 document.getElementById('btnWebcam').onclick = startWebcam;
 document.getElementById('btnStop').onclick = stopAll;
 
-document.getElementById('imageInput').onchange = async (e)=>{
+document.getElementById('imageInput').onchange = async (e) => {
   stopAll();
-  const file = e.target.files[0]; if(!file) return;
+  const file = e.target.files[0];
+  if (!file) return;
+
   const img = new Image();
-  img.onload = async ()=>{
-    canvas.width = img.width; canvas.height = img.height;
-    overlay.style.display='none';
-    await detect(img, img.width, img.height);
+  img.onload = async () => {
+    // This makes the image visible
+    canvas.width = img.width;
+    canvas.height = img.height;
+    ctx.drawImage(img, 0, 0); 
+    overlay.style.display = 'none';
+
+    // Only try to detect if model is actually loaded
+    if (session) {
+      await detect(img, img.width, img.height);
+    } else {
+      alert("Please wait for model to load or fix the Red error badge at the top.");
+    }
   };
   img.src = URL.createObjectURL(file);
 };
