@@ -1,5 +1,37 @@
 // ===== Configuration =====
-const MODEL_PATH = './model/best.onnx';
+// 1. Add these configuration lines at the VERY top of script.js
+ort.env.wasm.numThreads = 1; 
+ort.env.wasm.proxy = true; // Runs the model in a web worker to prevent UI freeze
+
+async function loadModel() {
+  try {
+    modelStatus.textContent = '🟡 Loading...';
+    console.log("Attempting to load model from:", MODEL_PATH);
+
+    // 2. Create session with explicit settings
+    session = await ort.InferenceSession.create(MODEL_PATH, {
+      executionProviders: ['wasm'],
+      graphOptimizationLevel: 'all'
+    });
+
+    console.log('✅ Model Loaded Successfully');
+    modelStatus.textContent = '✅ Model Ready';
+    modelStatus.className = 'status-badge ready';
+  } catch (e) {
+    console.error('Model Load Failed Details:', e);
+    modelStatus.textContent = '❌ Model Load Failed';
+    modelStatus.className = 'status-badge error';
+    
+    // Check if it's a 404 error
+    if (e.message.includes('404') || e.message.includes('fetch')) {
+        alert("Model file not found! Check if 'model/best.onnx' exists in your GitHub folder.");
+    } else {
+        alert("Model Error: " + e.message);
+    }
+  }
+}
+loadModel();
+const MODEL_PATH = 'model/best.onnx';
 const INPUT_SIZE = 640;
 // IMPORTANT: Update these class names to match your training!
 const CLASSES = ['person', 'id_card']; // Change based on your model
